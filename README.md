@@ -504,3 +504,194 @@ data.head()
 2. **Saves Preprocessing Tools**: Saves the encoders and scaler for consistent preprocessing of new data during model evaluation or deployment.
 
 ---
+This block of code is setting up a neural network using TensorFlow and Keras. Here's a detailed explanation of each part with its purpose, followed by a visual and simple explanation:
+
+---
+
+### **1. Imports**:
+```python
+import tensorflow as tf
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense
+from tensorflow.keras.callbacks import EarlyStopping, TensorBoard
+import datetime
+```
+
+- **TensorFlow**: A library for building and training machine learning and deep learning models.
+- **Sequential**: A Keras model type where layers are added in sequence, from input to output.
+- **Dense**: A layer type where every neuron in one layer is connected to every neuron in the next layer.
+- **EarlyStopping**: A callback to stop training when the model performance stops improving, preventing overfitting.
+- **TensorBoard**: A tool for visualizing training metrics like loss and accuracy over time.
+- **datetime**: Used for generating timestamps to organize TensorBoard logs.
+
+---
+
+### **2. Neural Network Model**:
+```python
+model = Sequential([
+    Dense(64, activation='relu', input_shape=(X_train.shape[1],)),  ## Hidden Layer 1
+    Dense(32, activation='relu'),                                  ## Hidden Layer 2
+    Dense(1, activation='sigmoid')                                ## Output Layer
+])
+```
+
+#### Explanation of each line:
+1. **`Dense(64, activation='relu', input_shape=(X_train.shape[1],))`**:
+   - **Dense**: A fully connected layer with 64 neurons.
+   - **`activation='relu'`**: Applies the ReLU activation function, which outputs 0 for negative inputs and the input itself for positive inputs, making it useful for non-linear problems.
+   - **`input_shape=(X_train.shape[1],)`**: Specifies the number of features in the input data so the model knows the input size.
+
+2. **`Dense(32, activation='relu')`**:
+   - A second hidden layer with 32 neurons and ReLU activation.
+
+3. **`Dense(1, activation='sigmoid')`**:
+   - The output layer with 1 neuron. 
+   - **`activation='sigmoid'`**: Outputs a value between 0 and 1, making it suitable for binary classification.
+
+---
+
+### **Visualizing the Neural Network**:
+
+Imagine your neural network as a flow of information:
+
+- **Input Layer**:
+  - Takes the input data (features from `X_train`).
+  - Shape: Number of features in `X_train`.
+
+- **Hidden Layer 1 (HL1)**:
+  - 64 neurons fully connected to the input layer.
+  - ReLU activation introduces non-linearity.
+
+- **Hidden Layer 2 (HL2)**:
+  - 32 neurons fully connected to HL1.
+  - ReLU activation applied again.
+
+- **Output Layer**:
+  - 1 neuron predicts the final output.
+  - Sigmoid activation converts the output into a probability (0 or 1 for binary classification).
+
+---
+![image](https://github.com/user-attachments/assets/61bbcc60-bab8-425a-a578-8fb325bd3968)
+
+### **Purpose of Each Layer**:
+1. **Hidden Layers**:
+   - Extract complex patterns from the input data.
+   - The first layer processes the raw data, and subsequent layers refine it.
+
+2. **Output Layer**:
+   - Provides the prediction (e.g., a probability of belonging to one class).
+
+---
+
+### **Simple Analogy**:
+
+Think of it as an assembly line:
+
+1. **Input Layer**: Raw materials (your data).
+2. **HL1**: First processing step, where the main assembly is done.
+3. **HL2**: Refines and polishes the output from the first step.
+4. **Output Layer**: The final product (classification or prediction).
+
+---
+
+### **Diagram of the Neural Network**:
+
+```plaintext
+Input Layer       Hidden Layer 1       Hidden Layer 2       Output Layer
+     |                  |                     |                    |
+[Feature 1]        (64 neurons)          (32 neurons)          (1 neuron)
+[Feature 2]        ReLU Activation      ReLU Activation     Sigmoid Activation
+  ... 
+[Feature n]        Fully Connected      Fully Connected     Final Probability
+```
+
+The illustration shows a simple neural network:
+
+- **Input Layer**: Contains nodes for each feature in the dataset. If your dataset has `X_train.shape[1]` features (e.g., 5), the input layer will have 5 nodes.
+- **Hidden Layer 1**: The first dense layer with 64 neurons and the ReLU activation function, connected to the input layer.
+- **Hidden Layer 2**: The second dense layer with 32 neurons and the ReLU activation function, connected to the first hidden layer.
+- **Output Layer**: A single neuron with the Sigmoid activation function, used for binary classification.
+
+### Why `input_shape=(X_train.shape[1],)` is a Tuple
+- **`input_shape` Parameter**: Specifies the shape of the input data. Here, `X_train.shape[1]` gives the number of features (columns) in the training data.
+- **Tuple Format**: TensorFlow requires the input shape to be in tuple format because it supports multi-dimensional data. Even for a single-dimensional input (e.g., a flat array of features), it needs the tuple structure for consistency and scalability to higher dimensions.
+---
+
+### Explanation of `model.summary()` Output
+
+1. **Model Name**: `"sequential"`  
+   Indicates that the model is a **Sequential Model**, meaning the layers are stacked linearly one after the other.
+
+---
+
+### Layers and Parameters
+
+| **Layer**          | **Output Shape** | **Params (#)** | **Explanation**                                                                                         |
+|---------------------|------------------|----------------|---------------------------------------------------------------------------------------------------------|
+| **dense (Dense)**   | `(None, 64)`     | 832            | - **Input to Hidden Layer 1**  
+  - `(None, 64)` means the batch size is dynamic (`None`) and each batch has 64 neurons.  
+  - Parameters = **(Input Features + 1 Bias)** × **Neurons** = `(13 + 1) × 64 = 832`. |
+| **dense_1 (Dense)** | `(None, 32)`     | 2,080          | - **Hidden Layer 1 to Hidden Layer 2**  
+  - Parameters = **(64 + 1 Bias)** × **32 Neurons** = `65 × 32 = 2,080`.                                     |
+| **dense_2 (Dense)** | `(None, 1)`      | 33             | - **Hidden Layer 2 to Output Layer**  
+  - Parameters = **(32 + 1 Bias)** × **1 Neuron** = `33`.                                                   |
+
+---
+
+### Key Terms
+- **Output Shape**: The shape of the data after passing through the layer. `None` represents the batch size, which can vary.
+- **Param #**: The total number of trainable parameters (weights and biases) in the layer.
+
+---
+
+### Total Parameters
+- **Trainable Parameters**: `2,945`  
+  These are the weights and biases that will be updated during training.
+- **Non-trainable Parameters**: `0`  
+  These are fixed parameters (e.g., frozen weights) and do not update during training.
+
+---
+### Explanation of the Code
+
+1. **`import tensorflow`**  
+   - Importing the TensorFlow library to access its functionalities.
+
+---
+
+2. **Optimizer: `Adam`**  
+   ```python
+   opt = tensorflow.keras.optimizers.Adam(learning_rate=0.01)
+   ```
+   - **Adam** is an adaptive optimization algorithm that combines the benefits of:
+     - **Momentum-based Gradient Descent** (for stability).
+     - **Adaptive Learning Rates** (for efficient convergence).  
+   - **Learning Rate**: `0.01` specifies how fast the model learns during training.  
+   - This optimizer adjusts weights based on the gradients of the loss function.
+
+---
+
+3. **Loss Function: `BinaryCrossentropy`**  
+   ```python
+   loss = tensorflow.keras.losses.BinaryCrossentropy()
+   ```
+   - This loss function is used for **binary classification** problems.  
+   - Measures the difference between the predicted probabilities and the actual class labels (0 or 1).  
+
+   **Attributes of the Loss Function**:
+   - `from_logits`: `False` means the model outputs probabilities (via the sigmoid function). If `True`, the model outputs raw logits.  
+   - `label_smoothing`: Default is `0.0`. If set, it smooths the labels, making them less confident to prevent overfitting.  
+   - `axis`: Specifies the axis for computation; default is `-1` (last axis).
+
+---
+
+4. **Output: `<LossFunctionWrapper>`**
+   - A wrapper around the `binary_crossentropy` function, indicating it's ready to compute the loss during training.
+
+---
+
+### Why These Choices?
+
+- **Adam**: Efficient and widely used for deep learning tasks. Works well with sparse data and large models.  
+- **Binary Crossentropy**: Ideal for binary classification problems as it penalizes predictions that deviate from the actual labels.  
+---
+
